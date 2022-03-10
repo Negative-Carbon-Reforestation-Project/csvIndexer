@@ -1,3 +1,4 @@
+import os.path
 import subprocess
 import sys
 import argparse
@@ -19,13 +20,18 @@ files = glob.glob(parser.path + '/*.csv')
 
 dataframes = []
 
+print('merging all csv files in: ' + parser.path)
 for path in files:
     df = pd.read_csv(path).rename(columns={'norm_value': os.path.basename(path)})
     df['long'] = df['long'].round(4)
     df['lat'] = df['lat'].round(4)
     df = df.set_index(['long', 'lat'])
     dataframes.append(df)
+    print('reading csv ' + os.path.basename(path))
 
 frame = pd.concat(dataframes, axis=1).fillna(0)
+print('done merging file')
+
+
 
 input()
