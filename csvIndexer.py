@@ -43,7 +43,7 @@ for path in files:
 print('formatting points')
 # format coords as point
 points = [point for point in map(lambda p: list(p), documents.index.tolist())]
-documents['point'] = points
+documents['location'] = points
 
 print('generating ids')
 # hash points as doc ids
@@ -76,7 +76,7 @@ for batch in range(1, args.batches + 1):
     json_documents = [doc for doc in map(lambda series: series.to_json(), documents[last_index:next_index].iloc)]
 
     for id, doc in zip(documents.index, json_documents):
-        request_body.write(str(JSONEncoder().encode({"index": {"_index": args.index, "_id": id}}) + '\n' + doc + '\n'))
+        request_body.write(str(JSONEncoder().encode({"index": {"_index": args.index, "_id": id},  "mappings": {"properties": {"location": {"type": "geo_point"}}}}) + '\n' + doc + '\n'))
     request_body.close()
 
     # cleanup memory
